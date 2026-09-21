@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="AppTitle" xml:space="preserve"><value>Vers Runtime Manager</value></data>
+  <data name="Groups" xml:space="preserve"><value>Groups</value></data>
+  <data name="Add" xml:space="preserve"><value>Add</value></data>
+  <data name="Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Versions" xml:space="preserve"><value>Versions</value></data>
+  <data name="Executable" xml:space="preserve"><value>Executable</value></data>
+  <data name="Browse" xml:space="preserve"><value>Browse</value></data>
+  <data name="DefaultVersion" xml:space="preserve"><value>Use as default version</value></data>
+  <data name="EnvironmentVariables" xml:space="preserve"><value>Environment variables</value></data>
+  <data name="Projects" xml:space="preserve"><value>Projects</value></data>
+  <data name="ProjectPath" xml:space="preserve"><value>Project directory</value></data>
+  <data name="Version" xml:space="preserve"><value>Version</value></data>
+  <data name="VariableName" xml:space="preserve"><value>Name</value></data>
+  <data name="Value" xml:space="preserve"><value>Value</value></data>
+  <data name="Save" xml:space="preserve"><value>Save</value></data>
+  <data name="Saved" xml:space="preserve"><value>Settings saved</value></data>
+  <data name="Language" xml:space="preserve"><value>Language</value></data>
+  <data name="PathReady" xml:space="preserve"><value>PATH configured</value></data>
+  <data name="PathAdded" xml:space="preserve"><value>bin was appended to PATH. Reopen terminals to use it.</value></data>
+  <data name="PathMissing" xml:space="preserve"><value>bin is not on PATH</value></data>
+  <data name="AddToPath" xml:space="preserve"><value>Set PATH</value></data>
+  <data name="PathActionHint" xml:space="preserve"><value>bin is not on PATH. Click to add it.</value></data>
+  <data name="PathReadyHint" xml:space="preserve"><value>bin is already on PATH.</value></data>
+  <data name="RootDirectory" xml:space="preserve"><value>Root</value></data>
+  <data name="NewGroup" xml:space="preserve"><value>New group</value></data>
+  <data name="GroupName" xml:space="preserve"><value>Group name</value></data>
+  <data name="NewVersion" xml:space="preserve"><value>New version</value></data>
+  <data name="VersionName" xml:space="preserve"><value>Version name</value></data>
+  <data name="ConfirmDeleteGroup" xml:space="preserve"><value>Delete group '{0}' and its proxy?</value></data>
+  <data name="ConfirmDeleteVersion" xml:space="preserve"><value>Delete version '{0}' and its project mappings?</value></data>
+  <data name="Confirm" xml:space="preserve"><value>Confirm</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Error" xml:space="preserve"><value>Error</value></data>
+  <data name="SelectGroup" xml:space="preserve"><value>Select or add a group.</value></data>
+  <data name="SelectVersion" xml:space="preserve"><value>Select or add a version.</value></data>
+  <data name="EnvironmentHint" xml:space="preserve"><value>Variables are passed only to this version. Existing variables can be referenced with ${PATH} or %PATH%.</value></data>
+  <data name="OverrideHint" xml:space="preserve"><value>Temporary override: VER_{0}_VERSION=&lt;version&gt;</value></data>
+</root>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+  <data name="AppTitle" xml:space="preserve"><value>Vers ランタイムマネージャー</value></data>
+  <data name="Groups" xml:space="preserve"><value>グループ</value></data>
+  <data name="Add" xml:space="preserve"><value>追加</value></data>
+  <data name="Delete" xml:space="preserve"><value>削除</value></data>
+  <data name="Versions" xml:space="preserve"><value>バージョン</value></data>
+  <data name="Executable" xml:space="preserve"><value>実行ファイル</value></data>
+  <data name="Browse" xml:space="preserve"><value>参照</value></data>
+  <data name="DefaultVersion" xml:space="preserve"><value>既定のバージョンにする</value></data>
+  <data name="EnvironmentVariables" xml:space="preserve"><value>環境変数</value></data>
+  <data name="Projects" xml:space="preserve"><value>プロジェクト</value></data>
+  <data name="ProjectPath" xml:space="preserve"><value>プロジェクトフォルダー</value></data>
+  <data name="Version" xml:space="preserve"><value>バージョン</value></data>
+  <data name="VariableName" xml:space="preserve"><value>名前</value></data>
+  <data name="Value" xml:space="preserve"><value>値</value></data>
+  <data name="Save" xml:space="preserve"><value>保存</value></data>
+  <data name="Saved" xml:space="preserve"><value>設定を保存しました</value></data>
+  <data name="Language" xml:space="preserve"><value>言語</value></data>
+  <data name="PathReady" xml:space="preserve"><value>PATH 設定済み</value></data>
+  <data name="PathAdded" xml:space="preserve"><value>bin を PATH の末尾に追加しました。ターミナルを開き直してください。</value></data>
+  <data name="PathMissing" xml:space="preserve"><value>bin は PATH に未登録です</value></data>
+  <data name="AddToPath" xml:space="preserve"><value>PATH を設定</value></data>
+  <data name="PathActionHint" xml:space="preserve"><value>bin は PATH に未登録です。クリックして追加します。</value></data>
+  <data name="PathReadyHint" xml:space="preserve"><value>bin は PATH に登録済みです。</value></data>
+  <data name="RootDirectory" xml:space="preserve"><value>ルート</value></data>
+  <data name="NewGroup" xml:space="preserve"><value>新しいグループ</value></data>
+  <data name="GroupName" xml:space="preserve"><value>グループ名</value></data>
+  <data name="NewVersion" xml:space="preserve"><value>新しいバージョン</value></data>
+  <data name="VersionName" xml:space="preserve"><value>バージョン名</value></data>
+  <data name="ConfirmDeleteGroup" xml:space="preserve"><value>グループ「{0}」とプロキシを削除しますか？</value></data>
+  <data name="ConfirmDeleteVersion" xml:space="preserve"><value>バージョン「{0}」とプロジェクト設定を削除しますか？</value></data>
+  <data name="Confirm" xml:space="preserve"><value>確認</value></data>
+  <data name="Cancel" xml:space="preserve"><value>キャンセル</value></data>
+  <data name="Error" xml:space="preserve"><value>エラー</value></data>
+  <data name="SelectGroup" xml:space="preserve"><value>グループを選択または追加してください。</value></data>
+  <data name="SelectVersion" xml:space="preserve"><value>バージョンを選択または追加してください。</value></data>
+  <data name="EnvironmentHint" xml:space="preserve"><value>変数はこのバージョンだけに渡されます。${PATH} または %PATH% で既存の変数を参照できます。</value></data>
+  <data name="OverrideHint" xml:space="preserve"><value>一時切替：VER_{0}_VERSION=&lt;バージョン&gt;</value></data>
+</root>

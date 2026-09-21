@@ -1,0 +1,85 @@
+<Window
+    x:Class="Vers.Gui.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Width="1120"
+    Height="760"
+    MinWidth="900"
+    MinHeight="620"
+    WindowStartupLocation="CenterScreen">
+  <Grid RowDefinitions="Auto,*,Auto">
+    <Border Grid.Row="0" Padding="20,12" BorderBrush="{DynamicResource SemiColorBorder}" BorderThickness="0,0,0,1">
+      <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Center">
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+          <TextBlock x:Name="LanguageLabel" VerticalAlignment="Center" />
+          <ComboBox x:Name="LanguageCombo" Width="130" Height="36" VerticalAlignment="Center" DisplayMemberBinding="{Binding DisplayName}" SelectionChanged="OnLanguageChanged" />
+          <Button x:Name="ConfigurePathButton" Width="112" Height="36" Margin="4,0,0,0" Padding="10,0" VerticalAlignment="Center" VerticalContentAlignment="Center" Click="OnConfigurePathClick" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <Grid Grid.Row="1" ColumnDefinitions="230,*">
+      <Border Padding="14" BorderBrush="{DynamicResource SemiColorBorder}" BorderThickness="0,0,1,0">
+        <Grid RowDefinitions="Auto,*,Auto">
+          <TextBlock x:Name="GroupsLabel" FontSize="15" FontWeight="SemiBold" Margin="6,2,0,10" />
+          <ListBox x:Name="GroupList" Grid.Row="1" SelectionChanged="OnGroupSelectionChanged" />
+          <Grid Grid.Row="2" Margin="0,12,0,0" ColumnDefinitions="*,*">
+            <Button x:Name="AddGroupButton" Margin="0,0,4,0" Click="OnAddGroupClick" />
+            <Button x:Name="DeleteGroupButton" Grid.Column="1" Margin="4,0,0,0" Click="OnDeleteGroupClick" />
+          </Grid>
+        </Grid>
+      </Border>
+
+      <TabControl x:Name="MainTabs" Grid.Column="1" Margin="18">
+        <TabItem x:Name="VersionsTab">
+          <Grid ColumnDefinitions="190,*" Margin="0,12,0,0">
+            <Grid RowDefinitions="*,Auto">
+              <ListBox x:Name="VersionList" SelectionChanged="OnVersionSelectionChanged" />
+              <Grid Grid.Row="1" Margin="0,12,12,0" ColumnDefinitions="*,*">
+                <Button x:Name="AddVersionButton" Margin="0,0,4,0" Click="OnAddVersionClick" />
+                <Button x:Name="DeleteVersionButton" Grid.Column="1" Margin="4,0,0,0" Click="OnDeleteVersionClick" />
+              </Grid>
+            </Grid>
+
+            <Grid x:Name="VersionEditor" Grid.Column="1" Margin="12,0,0,0" RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto">
+              <TextBlock x:Name="ExecutableLabel" FontWeight="SemiBold" />
+              <Grid Grid.Row="1" Margin="0,7,0,12" ColumnDefinitions="*,Auto">
+                <TextBox x:Name="ExecutableTextBox" PlaceholderText="/path/to/executable" />
+                <Button x:Name="BrowseExecutableButton" Grid.Column="1" Margin="8,0,0,0" Click="OnBrowseExecutableClick" />
+              </Grid>
+              <CheckBox x:Name="DefaultVersionCheckBox" Grid.Row="2" Click="OnDefaultVersionClick" />
+              <StackPanel Grid.Row="3" Margin="0,18,0,8">
+                <TextBlock x:Name="EnvironmentLabel" FontWeight="SemiBold" />
+                <TextBlock x:Name="EnvironmentHintText" Margin="0,4,0,0" Opacity="0.65" TextWrapping="Wrap" />
+              </StackPanel>
+              <DataGrid x:Name="EnvironmentGrid" Grid.Row="4" AutoGenerateColumns="False" CanUserResizeColumns="True" />
+              <StackPanel Grid.Row="5" Margin="0,10,0,0" Orientation="Horizontal" Spacing="8">
+                <AutoCompleteBox x:Name="EnvironmentSuggestionBox" Width="270" FilterMode="Contains" />
+                <Button x:Name="AddEnvironmentButton" Click="OnAddEnvironmentClick" />
+                <Button x:Name="DeleteEnvironmentButton" Click="OnDeleteEnvironmentClick" />
+              </StackPanel>
+              <TextBlock x:Name="OverrideHintText" Grid.Row="6" Margin="0,8,0,0" Opacity="0.65" TextWrapping="Wrap" />
+            </Grid>
+          </Grid>
+        </TabItem>
+
+        <TabItem x:Name="ProjectsTab">
+          <Grid Margin="0,12,0,0" RowDefinitions="*,Auto">
+            <DataGrid x:Name="ProjectsGrid" AutoGenerateColumns="False" CanUserResizeColumns="True" />
+            <StackPanel Grid.Row="1" Margin="0,10,0,0" Orientation="Horizontal" Spacing="8">
+              <Button x:Name="AddProjectButton" Click="OnAddProjectClick" />
+              <Button x:Name="DeleteProjectButton" Click="OnDeleteProjectClick" />
+            </StackPanel>
+          </Grid>
+        </TabItem>
+      </TabControl>
+    </Grid>
+
+    <Border Grid.Row="2" Padding="18,12" BorderBrush="{DynamicResource SemiColorBorder}" BorderThickness="0,1,0,0">
+      <Grid ColumnDefinitions="*,Auto">
+        <TextBlock x:Name="StatusText" VerticalAlignment="Center" />
+        <Button x:Name="SaveButton" Grid.Column="1" MinWidth="100" Click="OnSaveClick" />
+      </Grid>
+    </Border>
+  </Grid>
+</Window>

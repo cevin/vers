@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Vers.Core/Vers.Core.csproj" />
+    <Project Path="src/Vers.Gui/Vers.Gui.csproj" />
+    <Project Path="src/Vers.Platform/Vers.Platform.csproj" />
+    <Project Path="src/Vers.Tool/Vers.Tool.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Vers.Core.Tests/Vers.Core.Tests.csproj" />
+  </Folder>
+</Solution>

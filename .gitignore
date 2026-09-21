@@ -1,0 +1,9 @@
+bin/
+obj/
+artifacts/
+tmp/
+.DS_Store
+*.user
+*.suo
+*.nupkg
+*.snupkg

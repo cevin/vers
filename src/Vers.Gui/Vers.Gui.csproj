@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>ver</AssemblyName>
+    <RootNamespace>Vers.Gui</RootNamespace>
+    <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Desktop" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.0" />
+    <PackageReference Include="Semi.Avalonia" Version="12.1.0.1" />
+    <PackageReference Include="Semi.Avalonia.DataGrid" Version="12.1.0.1" />
+    <ProjectReference Include="../Vers.Core/Vers.Core.csproj" />
+    <ProjectReference Include="../Vers.Platform/Vers.Platform.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <_EffectiveRuntimeIdentifier Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</_EffectiveRuntimeIdentifier>
+    <_EffectiveRuntimeIdentifier Condition="'$(_EffectiveRuntimeIdentifier)' == ''">$(NETCoreSdkRuntimeIdentifier)</_EffectiveRuntimeIdentifier>
+    <_ToolFileName Condition="$([System.String]::Copy('$(_EffectiveRuntimeIdentifier)').StartsWith('win'))">tool.exe</_ToolFileName>
+    <_ToolFileName Condition="'$(_ToolFileName)' == ''">tool</_ToolFileName>
+    <_EmbeddedToolDirectory>$([System.IO.Path]::GetFullPath('$(BaseIntermediateOutputPath)embedded-tool/$(_EffectiveRuntimeIdentifier)'))</_EmbeddedToolDirectory>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="$(_EmbeddedToolDirectory)/$(_ToolFileName)" LogicalName="Vers.Gui.Resources.$(_ToolFileName)" />
+  </ItemGroup>
+
+  <Target Name="BuildEmbeddedTool" BeforeTargets="PrepareForBuild">
+    <MSBuild
+      Projects="../Vers.Tool/Vers.Tool.csproj"
+      Targets="Restore;Publish"
+      BuildInParallel="false"
+      StopOnFirstFailure="true"
+      Properties="Configuration=$(Configuration);RuntimeIdentifier=$(_EffectiveRuntimeIdentifier);PublishSingleFile=true;SelfContained=true;PublishTrimmed=true;TrimMode=full;InvariantGlobalization=true;EnableCompressionInSingleFile=true;PublishDir=$(_EmbeddedToolDirectory)/" />
+  </Target>
+</Project>

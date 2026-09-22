@@ -7,6 +7,7 @@
     <AvaloniaUseCompiledBindingsByDefault>false</AvaloniaUseCompiledBindingsByDefault>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <ApplicationIcon>Assets/AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +18,7 @@
     <PackageReference Include="Semi.Avalonia.DataGrid" Version="12.1.0.1" />
     <ProjectReference Include="../Vers.Core/Vers.Core.csproj" />
     <ProjectReference Include="../Vers.Platform/Vers.Platform.csproj" />
+    <AvaloniaResource Include="Assets/AppIcon.ico" />
   </ItemGroup>
 
   <PropertyGroup>

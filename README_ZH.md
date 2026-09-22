@@ -1,7 +1,5 @@
 # Vers
 
-[English](README.md) | [简体中文](README_ZH.md)
-
 Vers 是一个使用 .NET 10、Avalonia 和 Semi.Avalonia 开发的跨平台运行时版本切换工具。它可以
 为 `php`、`java`、`node` 或任意自定义分组创建命令代理，并根据当前目录、临时环境变量或默认
 配置选择真正需要执行的程序。
@@ -85,10 +83,6 @@ VERS_HOME="$PWD/tmp/test/gui" dotnet run --project src/Vers.Gui/Vers.Gui.csproj
 open artifacts/macos/Vers.app
 ```
 
-脚本不会执行 Developer ID 签名或公证，也不需要 Apple 开发者账号。.NET SDK 可能会自动为
-可执行文件添加 macOS 平台要求的 ad-hoc 签名。复制或下载到其他 Mac 后，仍可能需要在 Finder
-中右键选择“打开”，以确认通过 Gatekeeper 提示。
-
 在 Windows PowerShell 中构建 Windows 可执行文件。脚本会自动识别 x64 或 ARM64：
 
 ```powershell
@@ -98,3 +92,6 @@ open artifacts/macos/Vers.app
 
 GUI 和生成的命令代理均以自包含方式发布，目标机器无需单独安装 .NET。原生渲染库会嵌入最终的
 单文件 GUI 可执行程序。
+
+可编辑的图标源文件位于 `src/Vers.Gui/Assets/logo.png`。生成的 `.ico` 和 `.icns` 文件与源图
+放在同一目录，并由各平台打包脚本自动嵌入。

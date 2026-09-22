@@ -1,7 +1,5 @@
 # Vers
 
-[English](README.md) | [简体中文](README_ZH.md)
-
 Vers is a cross-platform GUI runtime switcher built with .NET 10, Avalonia, and Semi.Avalonia.
 It creates command proxies for arbitrary groups such as `php`, `java`, and `node`, then selects the
 real executable from the current directory, a temporary environment override, or the configured
@@ -90,11 +88,6 @@ Build the macOS `.app` on macOS. The script detects Apple Silicon or Intel autom
 open artifacts/macos/Vers.app
 ```
 
-The script does not perform Developer ID signing or notarization and needs no Apple developer
-account. The .NET SDK may apply a platform-required ad-hoc signature to the executable. A copy
-downloaded on another Mac may still require Finder's **Open** context-menu action because of
-Gatekeeper.
-
 Build the Windows executable from PowerShell on Windows. The script detects x64 or ARM64
 automatically:
 
@@ -106,3 +99,6 @@ automatically:
 Published GUI builds and generated command proxies are self-contained, so the target machine does
 not need a separate .NET installation. Native rendering libraries are embedded in the published
 single-file GUI executable.
+
+The editable icon source is `src/Vers.Gui/Assets/logo.png`. Generated `.ico` and `.icns` files live
+beside it and are embedded by the platform packaging scripts.

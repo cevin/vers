@@ -35,6 +35,7 @@ dotnet publish "$repo_root/src/Vers.Gui/Vers.Gui.csproj" \
 
 cp "$publish_dir/ver" "$contents/MacOS/ver"
 chmod +x "$contents/MacOS/ver"
+cp "$repo_root/src/Vers.Gui/Assets/AppIcon.icns" "$contents/Resources/AppIcon.icns"
 
 plist="$contents/Info.plist"
 /usr/libexec/PlistBuddy -c "Clear dict" "$plist"
@@ -42,6 +43,7 @@ plist="$contents/Info.plist"
 /usr/libexec/PlistBuddy -c "Add :CFBundleDisplayName string Vers" "$plist"
 /usr/libexec/PlistBuddy -c "Add :CFBundleIdentifier string com.cevin.vers" "$plist"
 /usr/libexec/PlistBuddy -c "Add :CFBundleExecutable string ver" "$plist"
+/usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$plist"
 /usr/libexec/PlistBuddy -c "Add :CFBundlePackageType string APPL" "$plist"
 /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 0.1.0" "$plist"
 /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string 1" "$plist"

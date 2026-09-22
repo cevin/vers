@@ -32,17 +32,17 @@
       </Grid>
     </Border>
 
-    <Grid Grid.Row="1" ColumnDefinitions="250,*">
+    <Grid Grid.Row="1" ColumnDefinitions="280,*">
       <Border Padding="14" BorderBrush="{DynamicResource SemiColorBorder}" BorderThickness="0,0,1,0">
         <Grid RowDefinitions="Auto,*,Auto">
           <TextBlock x:Name="GroupsLabel" FontSize="15" FontWeight="SemiBold" Margin="6,2,0,10" />
           <ListBox x:Name="GroupList" Grid.Row="1" SelectionChanged="OnGroupSelectionChanged">
             <ListBox.ItemTemplate>
               <DataTemplate>
-                <Grid Width="190" Height="30" ColumnDefinitions="*,Auto,Auto" Margin="2,0" ToolTip.Tip="{Binding WarningText}">
-                  <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                <Grid Width="220" Height="30" ColumnDefinitions="*,Auto,Auto" Margin="2,0">
+                  <TextBlock Text="{Binding Name}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
                   <Grid Grid.Column="1" IsVisible="{Binding HasWarning}">
-                    <TextBlock Classes="row-warning" Text="[WARN]" Margin="10,0,0,0" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="#D99A2B" IsVisible="{Binding !$parent[ListBoxItem].IsPointerOver}" />
+                    <TextBlock Classes="row-warning" Text="[WARN]" Margin="8,0,0,0" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="#D99A2B" ToolTip.Tip="{Binding WarningText}" />
                   </Grid>
                   <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" IsVisible="{Binding $parent[ListBoxItem].IsPointerOver}">
                     <Button Classes="icon-action" CommandParameter="{Binding Name}" ToolTip.Tip="{Binding EditText}" Click="OnEditGroupItemClick">

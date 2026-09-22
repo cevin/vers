@@ -6,6 +6,7 @@ using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using Vers.Core;
+using Vers.Platform;
 
 namespace Vers.Gui;
 
@@ -291,6 +292,7 @@ public sealed partial class MainWindow : Window
                 BootstrapService.EnsureProxy(_context, groupName);
             }
 
+            RefreshGroupPathStatuses();
             SetStatus(LocalizationService.Get("Saved"));
         }
         catch (Exception exception)
@@ -303,8 +305,19 @@ public sealed partial class MainWindow : Window
     {
         try
         {
-            _pathStatus = _context.PlatformAdapter.EnsureBinOnUserPath(_context.BinDirectory);
+            _pathStatus = _context.PlatformAdapter.EnsureBinOnPath(_context.BinDirectory);
             UpdatePathStatus();
+            RefreshGroupPathStatuses();
+        }
+        catch (UnauthorizedAccessException) when (OperatingSystem.IsWindows() && !Program.IsElevatedRelaunch)
+        {
+            if (App.TryRelaunchElevated(setPath: true))
+            {
+                Close();
+                return;
+            }
+
+            await ShowErrorAsync(LocalizationService.Get("PathElevationCancelled"));
         }
         catch (Exception exception)
         {
@@ -320,7 +333,7 @@ public sealed partial class MainWindow : Window
         }
 
         FlushEditors();
-        _selectedGroupName = GroupList.SelectedItem as string;
+        _selectedGroupName = (GroupList.SelectedItem as GroupListItem)?.Name;
         _selectedVersionName = null;
         if (TryGetSelectedGroup(out var group))
         {
@@ -361,6 +374,7 @@ public sealed partial class MainWindow : Window
         _context.Settings.UiCulture = language.CultureName;
         SettingsStore.Save(_context.SettingsPath, _context.Settings);
         ApplyLocalizedText();
+        RefreshGroupPathStatuses();
     }
 
     private void RefreshGroups(string? select = null)
@@ -369,9 +383,11 @@ public sealed partial class MainWindow : Window
         try
         {
             var groups = _context.Settings.Groups.Keys.Order(StringComparer.OrdinalIgnoreCase).ToArray();
-            GroupList.ItemsSource = groups;
-            GroupList.SelectedItem = select ?? groups.FirstOrDefault();
-            _selectedGroupName = GroupList.SelectedItem as string;
+            var groupItems = CreateGroupListItems(groups);
+            GroupList.ItemsSource = groupItems;
+            GroupList.SelectedItem = groupItems.FirstOrDefault(item =>
+                item.Name.Equals(select ?? groups.FirstOrDefault(), StringComparison.OrdinalIgnoreCase));
+            _selectedGroupName = (GroupList.SelectedItem as GroupListItem)?.Name;
             _selectedVersionName = null;
             if (TryGetSelectedGroup(out var group))
             {
@@ -600,6 +616,50 @@ public sealed partial class MainWindow : Window
         ToolTip.SetTip(
             ConfigurePathButton,
             LocalizationService.Get(_pathStatus.IsConfigured ? "PathReadyHint" : "PathActionHint"));
+    }
+
+    private GroupListItem[] CreateGroupListItems(IReadOnlyList<string> groupNames)
+    {
+        var priority = _context.PlatformAdapter.GetCommandPriorityStatus(
+            _context.BinDirectory,
+            groupNames);
+        return priority.Probes.Select(probe => probe.State switch
+        {
+            CommandPathState.Active => new GroupListItem(probe.CommandName, false, null),
+            CommandPathState.Conflict => new GroupListItem(
+                probe.CommandName,
+                true,
+                string.Format(
+                    LocalizationService.Get("CommandPathConflict"),
+                    probe.ResolvedPath,
+                    probe.ExpectedPath)),
+            CommandPathState.Missing => new GroupListItem(
+                probe.CommandName,
+                true,
+                string.Format(LocalizationService.Get("CommandPathMissing"), probe.ExpectedPath)),
+            _ => new GroupListItem(
+                probe.CommandName,
+                true,
+                string.Format(LocalizationService.Get("CommandProxyMissing"), probe.ExpectedPath))
+        }).ToArray();
+    }
+
+    private void RefreshGroupPathStatuses()
+    {
+        var selectedName = _selectedGroupName;
+        var groupNames = _context.Settings.Groups.Keys.Order(StringComparer.OrdinalIgnoreCase).ToArray();
+        var items = CreateGroupListItems(groupNames);
+        _loading = true;
+        try
+        {
+            GroupList.ItemsSource = items;
+            GroupList.SelectedItem = items.FirstOrDefault(item =>
+                item.Name.Equals(selectedName, StringComparison.OrdinalIgnoreCase));
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
 
     private void SetStatus(string text) => StatusText.Text = text;

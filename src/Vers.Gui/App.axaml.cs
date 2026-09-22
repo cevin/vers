@@ -20,11 +20,15 @@ public sealed partial class App : Application
             {
                 var adapter = PlatformAdapterFactory.Create();
                 var context = BootstrapService.Initialize(Environment.CurrentDirectory, adapter);
+                if (Program.SetPathOnLaunch)
+                {
+                    context = context with { PathStatus = adapter.EnsureBinOnPath(context.BinDirectory) };
+                }
                 desktop.MainWindow = new MainWindow(context);
             }
             catch (UnauthorizedAccessException exception) when (OperatingSystem.IsWindows() && !Program.IsElevatedRelaunch)
             {
-                if (TryRelaunchElevated())
+                if (TryRelaunchElevated(setPath: Program.SetPathOnLaunch))
                 {
                     desktop.Shutdown();
                     return;
@@ -54,7 +58,7 @@ public sealed partial class App : Application
         }
     };
 
-    private static bool TryRelaunchElevated()
+    internal static bool TryRelaunchElevated(bool setPath)
     {
         var processPath = Environment.ProcessPath;
         if (processPath is null)
@@ -72,6 +76,10 @@ public sealed partial class App : Application
                 WorkingDirectory = Environment.CurrentDirectory
             };
             startInfo.ArgumentList.Add("--vers-elevated");
+            if (setPath)
+            {
+                startInfo.ArgumentList.Add("--vers-set-path");
+            }
             return Process.Start(startInfo) is not null;
         }
         catch (Win32Exception)

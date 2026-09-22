@@ -22,7 +22,7 @@
   <data name="Saved" xml:space="preserve"><value>设置已保存</value></data>
   <data name="Language" xml:space="preserve"><value>语言</value></data>
   <data name="PathReady" xml:space="preserve"><value>PATH 已配置</value></data>
-  <data name="PathAdded" xml:space="preserve"><value>已将 bin 追加到 PATH 末尾，重新打开终端后即可使用。</value></data>
+  <data name="PathAdded" xml:space="preserve"><value>已将 bin 放到 PATH 最前面，重新打开终端后即可使用。</value></data>
   <data name="PathMissing" xml:space="preserve"><value>bin 尚未加入 PATH</value></data>
   <data name="AddToPath" xml:space="preserve"><value>设置 PATH</value></data>
   <data name="PathActionHint" xml:space="preserve"><value>检测到尚未加入 PATH，点击添加</value></data>
@@ -41,4 +41,8 @@
   <data name="SelectVersion" xml:space="preserve"><value>请选择或添加一个版本。</value></data>
   <data name="EnvironmentHint" xml:space="preserve"><value>变量只会传给当前版本；可通过 ${PATH} 或 %PATH% 引用现有变量。</value></data>
   <data name="OverrideHint" xml:space="preserve"><value>临时覆盖：VER_{0}_VERSION=&lt;版本&gt;</value></data>
+  <data name="CommandPathConflict" xml:space="preserve"><value>该命令尚未生效，通过 PATH 找到的第一可执行路径是：{0}。预期的 Vers 代理是：{1}。</value></data>
+  <data name="CommandPathMissing" xml:space="preserve"><value>该命令尚未生效，通过 PATH 未找到可执行文件。预期的 Vers 代理是：{0}。</value></data>
+  <data name="CommandProxyMissing" xml:space="preserve"><value>Vers 代理文件不存在：{0}。</value></data>
+  <data name="PathElevationCancelled" xml:space="preserve"><value>设置 Windows 系统 PATH 需要管理员权限。</value></data>
 </root>

@@ -1,5 +1,7 @@
 namespace Vers.Gui;
 
+public sealed record GroupListItem(string Name, bool HasWarning, string? WarningText);
+
 public sealed class EnvironmentRow
 {
     public string Name { get; set; } = string.Empty;

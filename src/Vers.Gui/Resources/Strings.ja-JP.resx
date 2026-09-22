@@ -22,7 +22,7 @@
   <data name="Saved" xml:space="preserve"><value>設定を保存しました</value></data>
   <data name="Language" xml:space="preserve"><value>言語</value></data>
   <data name="PathReady" xml:space="preserve"><value>PATH 設定済み</value></data>
-  <data name="PathAdded" xml:space="preserve"><value>bin を PATH の末尾に追加しました。ターミナルを開き直してください。</value></data>
+  <data name="PathAdded" xml:space="preserve"><value>bin を PATH の先頭に追加しました。ターミナルを開き直してください。</value></data>
   <data name="PathMissing" xml:space="preserve"><value>bin は PATH に未登録です</value></data>
   <data name="AddToPath" xml:space="preserve"><value>PATH を設定</value></data>
   <data name="PathActionHint" xml:space="preserve"><value>bin は PATH に未登録です。クリックして追加します。</value></data>
@@ -41,4 +41,8 @@
   <data name="SelectVersion" xml:space="preserve"><value>バージョンを選択または追加してください。</value></data>
   <data name="EnvironmentHint" xml:space="preserve"><value>変数はこのバージョンだけに渡されます。${PATH} または %PATH% で既存の変数を参照できます。</value></data>
   <data name="OverrideHint" xml:space="preserve"><value>一時切替：VER_{0}_VERSION=&lt;バージョン&gt;</value></data>
+  <data name="CommandPathConflict" xml:space="preserve"><value>このコマンドはまだ有効ではありません。PATH で最初に見つかった実行ファイル：{0}。Vers プロキシ：{1}。</value></data>
+  <data name="CommandPathMissing" xml:space="preserve"><value>このコマンドはまだ有効ではなく、PATH から実行ファイルが見つかりません。Vers プロキシ：{0}。</value></data>
+  <data name="CommandProxyMissing" xml:space="preserve"><value>Vers プロキシがありません：{0}。</value></data>
+  <data name="PathElevationCancelled" xml:space="preserve"><value>Windows のシステム PATH を更新するには管理者権限が必要です。</value></data>
 </root>

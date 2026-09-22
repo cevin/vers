@@ -14,6 +14,14 @@ internal sealed partial class UnixPlatformAdapter(bool isMacOS) : IPlatformAdapt
 
     public string ToolResourceName => "Vers.Gui.Resources.tool";
 
+    public string GetInstallationRoot(string startupDirectory)
+    {
+        var overridePath = Environment.GetEnvironmentVariable("VERS_HOME");
+        return Path.GetFullPath(string.IsNullOrWhiteSpace(overridePath)
+            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".vers")
+            : overridePath);
+    }
+
     public PathStatus GetPathStatus(string binDirectory)
     {
         var currentPath = Environment.GetEnvironmentVariable("PATH");
@@ -26,7 +34,7 @@ internal sealed partial class UnixPlatformAdapter(bool isMacOS) : IPlatformAdapt
         return new PathStatus(configured, false, configured ? "configured" : "missing");
     }
 
-    public PathStatus EnsureBinOnUserPath(string binDirectory)
+    public PathStatus EnsureBinOnPath(string binDirectory)
     {
         var profilePath = GetProfilePath();
         var exportLine = CreateExportLine(binDirectory);
@@ -50,16 +58,21 @@ internal sealed partial class UnixPlatformAdapter(bool isMacOS) : IPlatformAdapt
             }
         }
 
-        var currentPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-        if (!PathList.Contains(currentPath, binDirectory, ':'))
-        {
-            Environment.SetEnvironmentVariable(
-                "PATH",
-                string.IsNullOrEmpty(currentPath) ? binDirectory : $"{currentPath}:{binDirectory}");
-        }
+        var currentPath = Environment.GetEnvironmentVariable("PATH");
+        Environment.SetEnvironmentVariable("PATH", PathList.Prepend(currentPath, binDirectory, ':'));
 
         return new PathStatus(true, changed, changed ? "added" : "configured");
     }
+
+    public CommandPriorityStatus GetCommandPriorityStatus(
+        string binDirectory,
+        IReadOnlyList<string> commandNames) =>
+        PathPriorityAnalyzer.Analyze(
+            binDirectory,
+            ExecutableSuffix,
+            GetEffectivePathForProbe(binDirectory),
+            ':',
+            commandNames);
 
     public void MakeExecutable(string filePath)
     {
@@ -82,8 +95,23 @@ internal sealed partial class UnixPlatformAdapter(bool isMacOS) : IPlatformAdapt
         return Path.Combine(home, isMacOS ? ".zprofile" : ".profile");
     }
 
-    private static string CreateExportLine(string binDirectory) =>
-        $"export PATH=\"$PATH:{EscapeForDoubleQuotedShell(binDirectory)}\"";
+    private string GetEffectivePathForProbe(string binDirectory)
+    {
+        var currentPath = Environment.GetEnvironmentVariable("PATH");
+        if (PathList.Contains(currentPath, binDirectory, ':'))
+        {
+            return currentPath ?? string.Empty;
+        }
+
+        var profilePath = GetProfilePath();
+        var profile = File.Exists(profilePath) ? File.ReadAllText(profilePath) : string.Empty;
+        return profile.Contains(CreateExportLine(binDirectory), StringComparison.Ordinal)
+            ? PathList.Prepend(currentPath, binDirectory, ':')
+            : currentPath ?? string.Empty;
+    }
+
+    internal static string CreateExportLine(string binDirectory) =>
+        $"export PATH=\"{EscapeForDoubleQuotedShell(binDirectory)}:$PATH\"";
 
     private static string EscapeForDoubleQuotedShell(string value) =>
         value.Replace("\\", "\\\\", StringComparison.Ordinal)

@@ -22,7 +22,7 @@
   <data name="Saved" xml:space="preserve"><value>Settings saved</value></data>
   <data name="Language" xml:space="preserve"><value>Language</value></data>
   <data name="PathReady" xml:space="preserve"><value>PATH configured</value></data>
-  <data name="PathAdded" xml:space="preserve"><value>bin was appended to PATH. Reopen terminals to use it.</value></data>
+  <data name="PathAdded" xml:space="preserve"><value>bin was prepended to PATH. Reopen terminals to use it.</value></data>
   <data name="PathMissing" xml:space="preserve"><value>bin is not on PATH</value></data>
   <data name="AddToPath" xml:space="preserve"><value>Set PATH</value></data>
   <data name="PathActionHint" xml:space="preserve"><value>bin is not on PATH. Click to add it.</value></data>
@@ -41,4 +41,8 @@
   <data name="SelectVersion" xml:space="preserve"><value>Select or add a version.</value></data>
   <data name="EnvironmentHint" xml:space="preserve"><value>Variables are passed only to this version. Existing variables can be referenced with ${PATH} or %PATH%.</value></data>
   <data name="OverrideHint" xml:space="preserve"><value>Temporary override: VER_{0}_VERSION=&lt;version&gt;</value></data>
+  <data name="CommandPathConflict" xml:space="preserve"><value>This command is not active. The first executable found through PATH is: {0}. Expected Vers proxy: {1}.</value></data>
+  <data name="CommandPathMissing" xml:space="preserve"><value>This command is not active because PATH does not resolve it. Expected Vers proxy: {0}.</value></data>
+  <data name="CommandProxyMissing" xml:space="preserve"><value>The Vers proxy is missing: {0}.</value></data>
+  <data name="PathElevationCancelled" xml:space="preserve"><value>Administrator permission is required to update the Windows system PATH.</value></data>
 </root>

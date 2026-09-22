@@ -18,7 +18,7 @@ public static class BootstrapService
 {
     public static AppContext Initialize(string rootDirectory, IPlatformAdapter adapter)
     {
-        rootDirectory = Path.GetFullPath(rootDirectory);
+        rootDirectory = adapter.GetInstallationRoot(rootDirectory);
         var dataDirectory = Path.Combine(rootDirectory, "data");
         var utilDirectory = Path.Combine(rootDirectory, "util");
         var binDirectory = Path.Combine(rootDirectory, "bin");

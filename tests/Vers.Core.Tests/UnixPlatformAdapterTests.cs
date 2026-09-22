@@ -28,4 +28,17 @@ public sealed class UnixPlatformAdapterTests
         Assert.Contains("before", updated);
         Assert.Contains("middle", updated);
     }
+
+    [Fact]
+    public void CreateExportLine_PrependsVersBinBeforeExistingPath()
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            return;
+        }
+
+        var result = UnixPlatformAdapter.CreateExportLine("/home/user/.vers/bin");
+
+        Assert.Equal("export PATH=\"/home/user/.vers/bin:$PATH\"", result);
+    }
 }

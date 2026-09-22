@@ -1,46 +1,71 @@
 # Vers
 
+[English](README.md) | [简体中文](README_ZH.md)
+
 Vers is a cross-platform GUI runtime switcher built with .NET 10, Avalonia, and Semi.Avalonia.
-It creates lightweight command proxies such as `php`, `java`, and `node`, then selects the real
-executable from the current directory, a temporary environment override, or the configured default.
+It creates command proxies for arbitrary groups such as `php`, `java`, and `node`, then selects the
+real executable from the current directory, a temporary environment override, or the configured
+default.
 
-## Runtime behavior
+## Managed files
 
-On first launch, `ver` uses its current working directory as the installation root and creates:
+On macOS and Linux, Vers stores its managed files under `~/.vers`. On Windows, it uses the working
+directory from which `ver.exe` was started. Set `VERS_HOME` to override the root on any platform.
 
 ```text
-./
-├── ver[.exe]
+<vers-root>/
 ├── util/tool[.exe]
 ├── bin/<group>[.exe]
 └── data/settings.json
 ```
 
-Creating or deleting a group creates or deletes the matching proxy in `bin`. The GUI can append
-`bin` to the user PATH after the user clicks **Set PATH**. Existing terminals must then be reopened.
+Creating or deleting a group creates or deletes its matching proxy in `bin`. This platform-specific
+root selection is handled by adapters, so a future macOS `.app` does not depend on Finder's working
+directory.
 
-Windows builds also create an extensionless shell companion for every proxy. With standard WSL
-Windows-PATH import enabled, commands such as `php` work from WSL and pass the converted working
-directory to the Windows proxy.
+## PATH priority
+
+> [!WARNING]
+> Shells run the first matching executable found in `PATH`. If `/usr/bin` appears before the Vers
+> `bin` directory and contains `/usr/bin/php`, running `php` may bypass Vers. The same rule applies
+> to every group and platform.
+
+Vers only changes PATH after **Set PATH** is clicked:
+
+- macOS/Linux: replaces one managed block in the user's shell profile and prepends `~/.vers/bin`.
+- Windows: prepends the Vers `bin` directory to the system PATH. This requires UAC elevation.
+
+Repeated setup does not add duplicate entries. After a PATH change, reopen existing terminals.
+
+At startup and after configuration changes, Vers simulates command resolution for every configured
+group. A group shows `[WARN]` when PATH resolves another executable first, or does not resolve the
+command at all. Hover over the warning to see the resolved and expected paths.
+
+Windows builds also create an extensionless WSL companion for every proxy. With standard WSL
+Windows-PATH import enabled, commands such as `php` pass the converted working directory to the
+Windows proxy.
+
+## Version resolution
 
 Resolution order for a proxy is:
 
-1. `VER_<GROUP>_VERSION`, for example `VER_PHP_VERSION=php84`
+1. `VER_<GROUP>_VERSION`, for example `VER_PHP_VERSION=84`
 2. The longest matching project directory
 3. The configured default version
 
-Bind the current directory from any proxy without opening the GUI:
+Bind the current directory without opening the GUI:
 
 ```bash
-php @bind:82
+php @bind:72
 java @bind:27
 ```
 
-The value after `@bind:` must exactly match a configured version name, ignoring letter case. Binding
-updates the group's project-directory mapping and does not launch the underlying runtime.
+The value after `@bind:` must exactly match a configured version name, ignoring letter case. `@bind`
+or `@bind:` without a value prints all available version names and executable paths. Binding updates
+`settings.json` and does not launch the underlying runtime.
 
 Each version can define environment variables. They inherit the proxy process environment and may
-reference an existing value with `${NAME}`, `$NAME`, or `%NAME%`. `JAVA_HOME` is an ordinary manual
+reference existing values with `${NAME}`, `$NAME`, or `%NAME%`. `JAVA_HOME` is an ordinary manual
 version setting; Vers does not infer it.
 
 ## Build and test
@@ -50,25 +75,34 @@ version setting; Vers does not infer it.
 ```bash
 dotnet build Vers.slnx
 dotnet test Vers.slnx
-./scripts/publish.sh osx-arm64
 ```
 
-To test first-run behavior in a temporary working directory:
+Use `VERS_HOME` when testing first-run behavior without changing `~/.vers`:
 
 ```bash
-mkdir -p tmp/test/gui
-cd tmp/test/gui
-dotnet run --project ../../../src/Vers.Gui/Vers.Gui.csproj
+VERS_HOME="$PWD/tmp/test/gui" dotnet run --project src/Vers.Gui/Vers.Gui.csproj
 ```
 
-Startup only checks PATH. The GUI changes the user PATH after the user clicks **Add to PATH**.
+Build the macOS `.app` on macOS. The script detects Apple Silicon or Intel automatically:
 
-On PowerShell:
+```bash
+./scripts/mac.sh
+open artifacts/macos/Vers.app
+```
+
+The script does not perform Developer ID signing or notarization and needs no Apple developer
+account. The .NET SDK may apply a platform-required ad-hoc signature to the executable. A copy
+downloaded on another Mac may still require Finder's **Open** context-menu action because of
+Gatekeeper.
+
+Build the Windows executable from PowerShell on Windows. The script detects x64 or ARM64
+automatically:
 
 ```powershell
-./scripts/publish.ps1 win-x64
+./scripts/windows.ps1
+./artifacts/windows/ver.exe
 ```
 
 Published GUI builds and generated command proxies are self-contained, so the target machine does
-not need a separate .NET installation. Proxies are fully trimmed and compressed to keep each copied
-command reasonably small.
+not need a separate .NET installation. Native rendering libraries are embedded in the published
+single-file GUI executable.

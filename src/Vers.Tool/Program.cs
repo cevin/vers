@@ -24,6 +24,21 @@ internal static class ProxyProgram
                 ?? Environment.CurrentDirectory;
 
             var settings = SettingsStore.Load(settingsPath);
+            if (DirectoryBinding.TryParseCommand(arguments, out var requestedVersion))
+            {
+                var boundVersion = DirectoryBinding.Bind(
+                    settings,
+                    groupName,
+                    requestedVersion,
+                    callerDirectory);
+                SettingsStore.Save(settingsPath, settings);
+                Console.WriteLine(
+                    $"vers: binding successful. Current directory " +
+                    $"'{ToolResolver.NormalizePath(callerDirectory)}' now uses " +
+                    $"'{groupName}:{boundVersion}'.");
+                return 0;
+            }
+
             var resolved = ToolResolver.Resolve(settings, groupName, callerDirectory);
             var targetPath = EnvironmentValueExpander.Expand(
                 resolved.Executable,

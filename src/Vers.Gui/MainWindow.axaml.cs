@@ -77,14 +77,14 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private async void OnDeleteGroupClick(object? sender, RoutedEventArgs eventArgs)
+    private async void OnDeleteGroupItemClick(object? sender, RoutedEventArgs eventArgs)
     {
-        if (_selectedGroupName is null)
+        if (sender is not Button { CommandParameter: string groupName } ||
+            !_context.Settings.Groups.ContainsKey(groupName))
         {
             return;
         }
 
-        var groupName = _selectedGroupName;
         var confirmed = await new MessageWindow(
             LocalizationService.Get("Confirm"),
             string.Format(LocalizationService.Get("ConfirmDeleteGroup"), groupName),
@@ -96,12 +96,14 @@ public sealed partial class MainWindow : Window
 
         try
         {
+            FlushEditors();
+            var nextSelection = groupName.Equals(_selectedGroupName, StringComparison.OrdinalIgnoreCase)
+                ? null
+                : _selectedGroupName;
             _context.Settings.Groups.Remove(groupName);
             SettingsStore.Save(_context.SettingsPath, _context.Settings);
             BootstrapService.DeleteProxy(_context, groupName);
-            _selectedGroupName = null;
-            _selectedVersionName = null;
-            RefreshGroups();
+            RefreshGroups(nextSelection);
             SetStatus(LocalizationService.Get("Saved"));
         }
         catch (Exception exception)
@@ -110,14 +112,14 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private async void OnEditGroupClick(object? sender, RoutedEventArgs eventArgs)
+    private async void OnEditGroupItemClick(object? sender, RoutedEventArgs eventArgs)
     {
-        if (_selectedGroupName is null)
+        if (sender is not Button { CommandParameter: string currentName } ||
+            !_context.Settings.Groups.ContainsKey(currentName))
         {
             return;
         }
 
-        var currentName = _selectedGroupName;
         var newName = await new PromptWindow(
             LocalizationService.Get("EditGroup"),
             LocalizationService.Get("GroupName"),
@@ -201,14 +203,15 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private async void OnDeleteVersionClick(object? sender, RoutedEventArgs eventArgs)
+    private async void OnDeleteVersionItemClick(object? sender, RoutedEventArgs eventArgs)
     {
-        if (!TryGetSelectedGroup(out var group) || _selectedVersionName is null)
+        if (!TryGetSelectedGroup(out var group) ||
+            sender is not Button { CommandParameter: string versionName } ||
+            !group.Versions.ContainsKey(versionName))
         {
             return;
         }
 
-        var versionName = _selectedVersionName;
         var confirmed = await new MessageWindow(
             LocalizationService.Get("Confirm"),
             string.Format(LocalizationService.Get("ConfirmDeleteVersion"), versionName),
@@ -218,6 +221,10 @@ public sealed partial class MainWindow : Window
             return;
         }
 
+        FlushEditors();
+        var nextSelection = versionName.Equals(_selectedVersionName, StringComparison.OrdinalIgnoreCase)
+            ? null
+            : _selectedVersionName;
         group.Versions.Remove(versionName);
         foreach (var path in group.Projects.Where(pair =>
                      pair.Value.Equals(versionName, StringComparison.OrdinalIgnoreCase)).Select(pair => pair.Key).ToArray())
@@ -230,19 +237,19 @@ public sealed partial class MainWindow : Window
             group.DefaultVersion = group.Versions.Keys.FirstOrDefault();
         }
 
-        _selectedVersionName = null;
         LoadProjects(group);
-        RefreshVersions();
+        RefreshVersions(nextSelection);
     }
 
-    private async void OnEditVersionClick(object? sender, RoutedEventArgs eventArgs)
+    private async void OnEditVersionItemClick(object? sender, RoutedEventArgs eventArgs)
     {
-        if (!TryGetSelectedGroup(out var group) || _selectedVersionName is null)
+        if (!TryGetSelectedGroup(out var group) ||
+            sender is not Button { CommandParameter: string currentName } ||
+            !group.Versions.ContainsKey(currentName))
         {
             return;
         }
 
-        var currentName = _selectedVersionName;
         var newName = await new PromptWindow(
             LocalizationService.Get("EditVersion"),
             LocalizationService.Get("VersionName"),
@@ -441,7 +448,7 @@ public sealed partial class MainWindow : Window
         }
 
         FlushVersionEditor();
-        _selectedVersionName = VersionList.SelectedItem as string;
+        _selectedVersionName = (VersionList.SelectedItem as VersionListItem)?.Name;
         LoadVersionEditor();
         UpdateEditorState();
     }
@@ -453,11 +460,18 @@ public sealed partial class MainWindow : Window
             return;
         }
 
+        var selectedGroup = _selectedGroupName;
+        var selectedVersion = _selectedVersionName;
+        FlushEditors();
         LocalizationService.SetCulture(language.CultureName);
         _context.Settings.UiCulture = language.CultureName;
         SettingsStore.Save(_context.SettingsPath, _context.Settings);
         ApplyLocalizedText();
-        RefreshGroupPathStatuses();
+        RefreshGroups(selectedGroup);
+        if (selectedVersion is not null)
+        {
+            RefreshVersions(selectedVersion);
+        }
     }
 
     private void RefreshGroups(string? select = null)
@@ -503,10 +517,17 @@ public sealed partial class MainWindow : Window
                 return;
             }
 
-            var versions = group.Versions.Keys.Order(StringComparer.OrdinalIgnoreCase).ToArray();
+            var versions = group.Versions.Keys
+                .Order(StringComparer.OrdinalIgnoreCase)
+                .Select(name => new VersionListItem(
+                    name,
+                    LocalizationService.Get("Edit"),
+                    LocalizationService.Get("Delete")))
+                .ToArray();
             VersionList.ItemsSource = versions;
-            VersionList.SelectedItem = select ?? versions.FirstOrDefault();
-            _selectedVersionName = VersionList.SelectedItem as string;
+            VersionList.SelectedItem = versions.FirstOrDefault(item =>
+                item.Name.Equals(select ?? versions.FirstOrDefault()?.Name, StringComparison.OrdinalIgnoreCase));
+            _selectedVersionName = (VersionList.SelectedItem as VersionListItem)?.Name;
             LoadVersionEditor();
         }
         finally
@@ -607,11 +628,7 @@ public sealed partial class MainWindow : Window
     {
         var hasGroup = _selectedGroupName is not null;
         var hasVersion = _selectedVersionName is not null;
-        DeleteGroupButton.IsEnabled = hasGroup;
-        EditGroupButton.IsEnabled = hasGroup;
         AddVersionButton.IsEnabled = hasGroup;
-        EditVersionButton.IsEnabled = hasVersion;
-        DeleteVersionButton.IsEnabled = hasVersion;
         VersionEditor.IsEnabled = hasVersion;
         AddProjectButton.IsEnabled = hasVersion;
         DeleteProjectButton.IsEnabled = hasGroup;
@@ -632,13 +649,9 @@ public sealed partial class MainWindow : Window
         LanguageLabel.Text = LocalizationService.Get("Language");
         GroupsLabel.Text = LocalizationService.Get("Groups");
         AddGroupButton.Content = LocalizationService.Get("Add");
-        EditGroupButton.Content = LocalizationService.Get("Edit");
-        DeleteGroupButton.Content = LocalizationService.Get("Delete");
         VersionsTab.Header = LocalizationService.Get("Versions");
         ProjectsTab.Header = LocalizationService.Get("Projects");
         AddVersionButton.Content = LocalizationService.Get("Add");
-        EditVersionButton.Content = LocalizationService.Get("Edit");
-        DeleteVersionButton.Content = LocalizationService.Get("Delete");
         ExecutableLabel.Text = LocalizationService.Get("Executable");
         BrowseExecutableButton.Content = LocalizationService.Get("Browse");
         DefaultVersionCheckBox.Content = LocalizationService.Get("DefaultVersion");
@@ -707,27 +720,40 @@ public sealed partial class MainWindow : Window
 
     private GroupListItem[] CreateGroupListItems(IReadOnlyList<string> groupNames)
     {
+        var editText = LocalizationService.Get("Edit");
+        var deleteText = LocalizationService.Get("Delete");
         var priority = _context.PlatformAdapter.GetCommandPriorityStatus(
             _context.BinDirectory,
             groupNames);
         return priority.Probes.Select(probe => probe.State switch
         {
-            CommandPathState.Active => new GroupListItem(probe.CommandName, false, null),
+            CommandPathState.Active => new GroupListItem(
+                probe.CommandName,
+                false,
+                null,
+                editText,
+                deleteText),
             CommandPathState.Conflict => new GroupListItem(
                 probe.CommandName,
                 true,
                 string.Format(
                     LocalizationService.Get("CommandPathConflict"),
                     probe.ResolvedPath,
-                    probe.ExpectedPath)),
+                    probe.ExpectedPath),
+                editText,
+                deleteText),
             CommandPathState.Missing => new GroupListItem(
                 probe.CommandName,
                 true,
-                string.Format(LocalizationService.Get("CommandPathMissing"), probe.ExpectedPath)),
+                string.Format(LocalizationService.Get("CommandPathMissing"), probe.ExpectedPath),
+                editText,
+                deleteText),
             _ => new GroupListItem(
                 probe.CommandName,
                 true,
-                string.Format(LocalizationService.Get("CommandProxyMissing"), probe.ExpectedPath))
+                string.Format(LocalizationService.Get("CommandProxyMissing"), probe.ExpectedPath),
+                editText,
+                deleteText)
         }).ToArray();
     }
 

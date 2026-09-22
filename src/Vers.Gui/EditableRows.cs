@@ -1,6 +1,13 @@
 namespace Vers.Gui;
 
-public sealed record GroupListItem(string Name, bool HasWarning, string? WarningText);
+public sealed record GroupListItem(
+    string Name,
+    bool HasWarning,
+    string? WarningText,
+    string EditText,
+    string DeleteText);
+
+public sealed record VersionListItem(string Name, string EditText, string DeleteText);
 
 public sealed class EnvironmentRow
 {

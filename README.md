@@ -58,6 +58,9 @@ Creating or deleting a group creates or deletes its matching proxy in `bin`. Thi
 root selection is handled by adapters, so a future macOS `.app` does not depend on Finder's working
 directory.
 
+Vers does not write files into managed project directories, and it never modifies or deletes the
+actual runtimes installed on the system. It only changes command routing through its PATH proxies.
+
 ## PATH priority
 
 > [!WARNING]

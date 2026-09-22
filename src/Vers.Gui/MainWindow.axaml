@@ -33,9 +33,10 @@
               </DataTemplate>
             </ListBox.ItemTemplate>
           </ListBox>
-          <Grid Grid.Row="2" Margin="0,12,0,0" ColumnDefinitions="*,*">
+          <Grid Grid.Row="2" Margin="0,12,0,0" ColumnDefinitions="*,*,*">
             <Button x:Name="AddGroupButton" Margin="0,0,4,0" Click="OnAddGroupClick" />
-            <Button x:Name="DeleteGroupButton" Grid.Column="1" Margin="4,0,0,0" Click="OnDeleteGroupClick" />
+            <Button x:Name="EditGroupButton" Grid.Column="1" Margin="4,0" Click="OnEditGroupClick" />
+            <Button x:Name="DeleteGroupButton" Grid.Column="2" Margin="4,0,0,0" Click="OnDeleteGroupClick" />
           </Grid>
         </Grid>
       </Border>
@@ -45,9 +46,10 @@
           <Grid ColumnDefinitions="190,*" Margin="0,12,0,0">
             <Grid RowDefinitions="*,Auto">
               <ListBox x:Name="VersionList" SelectionChanged="OnVersionSelectionChanged" />
-              <Grid Grid.Row="1" Margin="0,12,12,0" ColumnDefinitions="*,*">
+              <Grid Grid.Row="1" Margin="0,12,12,0" ColumnDefinitions="*,*,*">
                 <Button x:Name="AddVersionButton" Margin="0,0,4,0" Click="OnAddVersionClick" />
-                <Button x:Name="DeleteVersionButton" Grid.Column="1" Margin="4,0,0,0" Click="OnDeleteVersionClick" />
+                <Button x:Name="EditVersionButton" Grid.Column="1" Margin="4,0" Click="OnEditVersionClick" />
+                <Button x:Name="DeleteVersionButton" Grid.Column="2" Margin="4,0,0,0" Click="OnDeleteVersionClick" />
               </Grid>
             </Grid>
 

@@ -40,10 +40,71 @@ public sealed class DirectoryBindingTests
             }
         };
 
-        var version = DirectoryBinding.Bind(settings, "php", "82", "/work/api/");
+        var binding = DirectoryBinding.Bind(settings, "php", "82", "/work/api/");
 
-        Assert.Equal("82", version);
+        Assert.Equal("82", binding.VersionName);
+        Assert.Null(binding.PreviousVersionName);
+        Assert.Equal("/work/api", binding.DirectoryPath);
         Assert.Equal("82", settings.Groups["php"].Projects["/work/api"]);
+    }
+
+    [Fact]
+    public void Bind_ReplacesExistingDirectoryMapping()
+    {
+        var group = CreateGroup("72", "84");
+        group.Projects["/work/api"] = "72";
+        var settings = new Settings
+        {
+            Groups = new Dictionary<string, ToolGroup>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["php"] = group
+            }
+        };
+
+        var binding = DirectoryBinding.Bind(settings, "php", "84", "/work/api/");
+
+        Assert.True(binding.IsReplacement);
+        Assert.Equal("72", binding.PreviousVersionName);
+        Assert.Equal("84", binding.VersionName);
+        Assert.Equal("84", group.Projects["/work/api"]);
+        Assert.Single(group.Projects);
+    }
+
+    [Fact]
+    public void Bind_PreservesWindowsPathFormatForSettings()
+    {
+        var settings = new Settings
+        {
+            Groups = new Dictionary<string, ToolGroup>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["php"] = CreateGroup("72")
+            }
+        };
+
+        var binding = DirectoryBinding.Bind(settings, "php", "72", @"d:/work/api/");
+
+        Assert.Equal(@"D:\work\api", binding.DirectoryPath);
+        Assert.Equal("72", settings.Groups["php"].Projects[@"D:\work\api"]);
+    }
+
+    [Fact]
+    public void Bind_ReportsUnchangedForSameVersion()
+    {
+        var group = CreateGroup("84");
+        group.Projects["/work/api"] = "84";
+        var settings = new Settings
+        {
+            Groups = new Dictionary<string, ToolGroup>(StringComparer.OrdinalIgnoreCase)
+            {
+                ["php"] = group
+            }
+        };
+
+        var binding = DirectoryBinding.Bind(settings, "php", "84", "/work/api");
+
+        Assert.True(binding.IsUnchanged);
+        Assert.False(binding.IsReplacement);
+        Assert.Single(group.Projects);
     }
 
     [Theory]

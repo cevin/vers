@@ -8,6 +8,7 @@
   <data name="Groups" xml:space="preserve"><value>グループ</value></data>
   <data name="Add" xml:space="preserve"><value>追加</value></data>
   <data name="Delete" xml:space="preserve"><value>削除</value></data>
+  <data name="Edit" xml:space="preserve"><value>編集</value></data>
   <data name="Versions" xml:space="preserve"><value>バージョン</value></data>
   <data name="Executable" xml:space="preserve"><value>実行ファイル</value></data>
   <data name="Browse" xml:space="preserve"><value>参照</value></data>
@@ -29,8 +30,10 @@
   <data name="PathReadyHint" xml:space="preserve"><value>bin は PATH に登録済みです。</value></data>
   <data name="RootDirectory" xml:space="preserve"><value>ルート</value></data>
   <data name="NewGroup" xml:space="preserve"><value>新しいグループ</value></data>
+  <data name="EditGroup" xml:space="preserve"><value>グループを編集</value></data>
   <data name="GroupName" xml:space="preserve"><value>グループ名</value></data>
   <data name="NewVersion" xml:space="preserve"><value>新しいバージョン</value></data>
+  <data name="EditVersion" xml:space="preserve"><value>バージョンを編集</value></data>
   <data name="VersionName" xml:space="preserve"><value>バージョン名</value></data>
   <data name="ConfirmDeleteGroup" xml:space="preserve"><value>グループ「{0}」とプロキシを削除しますか？</value></data>
   <data name="ConfirmDeleteVersion" xml:space="preserve"><value>バージョン「{0}」とプロジェクト設定を削除しますか？</value></data>

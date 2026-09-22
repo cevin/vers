@@ -8,7 +8,7 @@ internal sealed class PromptWindow : Window
 {
     private readonly TextBox _textBox;
 
-    public PromptWindow(string title, string label)
+    public PromptWindow(string title, string label, string? initialValue = null)
     {
         Title = title;
         Width = 420;
@@ -16,7 +16,11 @@ internal sealed class PromptWindow : Window
         CanResize = false;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-        _textBox = new TextBox { Margin = new Thickness(0, 7, 0, 18) };
+        _textBox = new TextBox
+        {
+            Margin = new Thickness(0, 7, 0, 18),
+            Text = initialValue ?? string.Empty
+        };
         var confirmButton = new Button
         {
             Content = LocalizationService.Get("Confirm"),
@@ -52,5 +56,6 @@ internal sealed class PromptWindow : Window
     {
         base.OnOpened(eventArgs);
         _textBox.Focus();
+        _textBox.SelectAll();
     }
 }

@@ -61,6 +61,21 @@ public static class BootstrapService
         context.PlatformAdapter.DeleteCompanionProxy(proxyPath);
     }
 
+    public static void RenameProxy(AppContext context, string currentName, string newName)
+    {
+        EnsureProxy(context, newName);
+
+        var currentPath = GetProxyPath(context, currentName);
+        var newPath = GetProxyPath(context, newName);
+        var comparison = OperatingSystem.IsWindows() || OperatingSystem.IsMacOS()
+            ? StringComparison.OrdinalIgnoreCase
+            : StringComparison.Ordinal;
+        if (!Path.GetFullPath(currentPath).Equals(Path.GetFullPath(newPath), comparison))
+        {
+            DeleteProxy(context, currentName);
+        }
+    }
+
     public static string GetProxyPath(AppContext context, string groupName) =>
         Path.Combine(context.BinDirectory, groupName + context.PlatformAdapter.ExecutableSuffix);
 

@@ -8,6 +8,7 @@
   <data name="Groups" xml:space="preserve"><value>分组</value></data>
   <data name="Add" xml:space="preserve"><value>添加</value></data>
   <data name="Delete" xml:space="preserve"><value>删除</value></data>
+  <data name="Edit" xml:space="preserve"><value>编辑</value></data>
   <data name="Versions" xml:space="preserve"><value>版本</value></data>
   <data name="Executable" xml:space="preserve"><value>可执行文件</value></data>
   <data name="Browse" xml:space="preserve"><value>浏览</value></data>
@@ -29,8 +30,10 @@
   <data name="PathReadyHint" xml:space="preserve"><value>bin 已加入 PATH</value></data>
   <data name="RootDirectory" xml:space="preserve"><value>根目录</value></data>
   <data name="NewGroup" xml:space="preserve"><value>新建分组</value></data>
+  <data name="EditGroup" xml:space="preserve"><value>编辑分组</value></data>
   <data name="GroupName" xml:space="preserve"><value>分组名称</value></data>
   <data name="NewVersion" xml:space="preserve"><value>新建版本</value></data>
+  <data name="EditVersion" xml:space="preserve"><value>编辑版本</value></data>
   <data name="VersionName" xml:space="preserve"><value>版本名称</value></data>
   <data name="ConfirmDeleteGroup" xml:space="preserve"><value>删除分组“{0}”及其代理文件？</value></data>
   <data name="ConfirmDeleteVersion" xml:space="preserve"><value>删除版本“{0}”及其项目目录映射？</value></data>

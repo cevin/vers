@@ -8,6 +8,7 @@
   <data name="Groups" xml:space="preserve"><value>Groups</value></data>
   <data name="Add" xml:space="preserve"><value>Add</value></data>
   <data name="Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="Edit" xml:space="preserve"><value>Edit</value></data>
   <data name="Versions" xml:space="preserve"><value>Versions</value></data>
   <data name="Executable" xml:space="preserve"><value>Executable</value></data>
   <data name="Browse" xml:space="preserve"><value>Browse</value></data>
@@ -29,8 +30,10 @@
   <data name="PathReadyHint" xml:space="preserve"><value>bin is already on PATH.</value></data>
   <data name="RootDirectory" xml:space="preserve"><value>Root</value></data>
   <data name="NewGroup" xml:space="preserve"><value>New group</value></data>
+  <data name="EditGroup" xml:space="preserve"><value>Edit group</value></data>
   <data name="GroupName" xml:space="preserve"><value>Group name</value></data>
   <data name="NewVersion" xml:space="preserve"><value>New version</value></data>
+  <data name="EditVersion" xml:space="preserve"><value>Edit version</value></data>
   <data name="VersionName" xml:space="preserve"><value>Version name</value></data>
   <data name="ConfirmDeleteGroup" xml:space="preserve"><value>Delete group '{0}' and its proxy?</value></data>
   <data name="ConfirmDeleteVersion" xml:space="preserve"><value>Delete version '{0}' and its project mappings?</value></data>

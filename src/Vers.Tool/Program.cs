@@ -26,16 +26,13 @@ internal static class ProxyProgram
             var settings = SettingsStore.Load(settingsPath);
             if (DirectoryBinding.TryParseCommand(arguments, out var requestedVersion))
             {
-                var boundVersion = DirectoryBinding.Bind(
+                var binding = DirectoryBinding.Bind(
                     settings,
                     groupName,
                     requestedVersion,
                     callerDirectory);
                 SettingsStore.Save(settingsPath, settings);
-                Console.WriteLine(
-                    $"vers: binding successful. Current directory " +
-                    $"'{ToolResolver.NormalizePath(callerDirectory)}' now uses " +
-                    $"'{groupName}:{boundVersion}'.");
+                WriteBindingResult(groupName, binding);
                 return 0;
             }
 
@@ -94,6 +91,32 @@ internal static class ProxyProgram
             Console.Error.WriteLine($"vers: unable to launch tool: {exception.Message}");
             return LaunchError;
         }
+    }
+
+    private static void WriteBindingResult(
+        string groupName,
+        DirectoryBindingResult binding)
+    {
+        var directory = binding.DirectoryPath;
+        if (binding.IsReplacement)
+        {
+            Console.WriteLine(
+                $"vers: binding replaced. Current directory '{directory}' changed from " +
+                $"'{groupName}:{binding.PreviousVersionName}' to '{groupName}:{binding.VersionName}'.");
+            return;
+        }
+
+        if (binding.IsUnchanged)
+        {
+            Console.WriteLine(
+                $"vers: binding unchanged. Current directory '{directory}' already uses " +
+                $"'{groupName}:{binding.VersionName}'.");
+            return;
+        }
+
+        Console.WriteLine(
+            $"vers: binding successful. Current directory '{directory}' now uses " +
+            $"'{groupName}:{binding.VersionName}'.");
     }
 
     private static string GetGroupName(string processPath)

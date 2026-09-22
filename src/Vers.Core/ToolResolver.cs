@@ -68,6 +68,39 @@ public static class ToolResolver
         return normalized;
     }
 
+    public static string NormalizePathForStorage(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            throw new ArgumentException("Path cannot be empty.", nameof(path));
+        }
+
+        var trimmed = path.Trim();
+        var isDrivePath = trimmed.Length >= 3 &&
+            char.IsLetter(trimmed[0]) &&
+            trimmed[1] == ':' &&
+            trimmed[2] is '/' or '\\';
+        var isUncPath = trimmed.StartsWith("\\\\", StringComparison.Ordinal) ||
+            trimmed.StartsWith("//", StringComparison.Ordinal);
+        if (!isDrivePath && !isUncPath)
+        {
+            return NormalizePath(trimmed);
+        }
+
+        var normalized = trimmed.Replace('/', '\\');
+        if (isDrivePath)
+        {
+            normalized = char.ToUpperInvariant(normalized[0]) + normalized[1..];
+        }
+
+        while (normalized.Length > 3 && normalized.EndsWith('\\'))
+        {
+            normalized = normalized[..^1];
+        }
+
+        return normalized;
+    }
+
     private static bool IsSameOrChild(string candidate, string parent)
     {
         if (candidate.Equals(parent, PathComparison))

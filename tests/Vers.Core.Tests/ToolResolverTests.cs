@@ -53,6 +53,15 @@ public sealed class ToolResolverTests
         Assert.Equal("/cache/composer", result.Environment["COMPOSER_HOME"]);
     }
 
+    [Theory]
+    [InlineData(@"d:/work/api/", @"D:\work\api")]
+    [InlineData(@"D:\work\api\", @"D:\work\api")]
+    [InlineData("/work/api/", "/work/api")]
+    public void NormalizePathForStorage_PreservesNativePathStyle(string path, string expected)
+    {
+        Assert.Equal(expected, ToolResolver.NormalizePathForStorage(path));
+    }
+
     private static Settings CreateSettings() => new()
     {
         Groups = new Dictionary<string, ToolGroup>(StringComparer.OrdinalIgnoreCase)

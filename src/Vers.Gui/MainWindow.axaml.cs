@@ -110,6 +110,59 @@ public sealed partial class MainWindow : Window
         }
     }
 
+    private async void OnEditGroupClick(object? sender, RoutedEventArgs eventArgs)
+    {
+        if (_selectedGroupName is null)
+        {
+            return;
+        }
+
+        var currentName = _selectedGroupName;
+        var newName = await new PromptWindow(
+            LocalizationService.Get("EditGroup"),
+            LocalizationService.Get("GroupName"),
+            currentName).ShowDialog<string?>(this);
+        if (newName is null)
+        {
+            return;
+        }
+
+        var renamedGroup = string.Empty;
+        try
+        {
+            FlushEditors();
+            renamedGroup = SettingsMutations.RenameGroup(_context.Settings, currentName, newName);
+            BootstrapService.EnsureProxy(_context, renamedGroup);
+            SettingsStore.Save(_context.SettingsPath, _context.Settings);
+        }
+        catch (Exception exception)
+        {
+            if (renamedGroup.Length > 0 && _context.Settings.Groups.ContainsKey(renamedGroup))
+            {
+                SettingsMutations.RenameGroup(_context.Settings, renamedGroup, currentName);
+                if (!renamedGroup.Equals(currentName, StringComparison.OrdinalIgnoreCase))
+                {
+                    BootstrapService.DeleteProxy(_context, renamedGroup);
+                }
+            }
+
+            await ShowErrorAsync(exception.Message);
+            return;
+        }
+
+        try
+        {
+            BootstrapService.RenameProxy(_context, currentName, renamedGroup);
+        }
+        catch (Exception exception)
+        {
+            await ShowErrorAsync(exception.Message);
+        }
+
+        RefreshGroups(renamedGroup);
+        SetStatus(LocalizationService.Get("Saved"));
+    }
+
     private async void OnAddVersionClick(object? sender, RoutedEventArgs eventArgs)
     {
         if (!TryGetSelectedGroup(out var group))
@@ -180,6 +233,36 @@ public sealed partial class MainWindow : Window
         _selectedVersionName = null;
         LoadProjects(group);
         RefreshVersions();
+    }
+
+    private async void OnEditVersionClick(object? sender, RoutedEventArgs eventArgs)
+    {
+        if (!TryGetSelectedGroup(out var group) || _selectedVersionName is null)
+        {
+            return;
+        }
+
+        var currentName = _selectedVersionName;
+        var newName = await new PromptWindow(
+            LocalizationService.Get("EditVersion"),
+            LocalizationService.Get("VersionName"),
+            currentName).ShowDialog<string?>(this);
+        if (newName is null)
+        {
+            return;
+        }
+
+        try
+        {
+            FlushEditors();
+            var renamedVersion = SettingsMutations.RenameVersion(group, currentName, newName);
+            LoadProjects(group);
+            RefreshVersions(renamedVersion);
+        }
+        catch (Exception exception)
+        {
+            await ShowErrorAsync(exception.Message);
+        }
     }
 
     private async void OnBrowseExecutableClick(object? sender, RoutedEventArgs eventArgs)
@@ -525,7 +608,9 @@ public sealed partial class MainWindow : Window
         var hasGroup = _selectedGroupName is not null;
         var hasVersion = _selectedVersionName is not null;
         DeleteGroupButton.IsEnabled = hasGroup;
+        EditGroupButton.IsEnabled = hasGroup;
         AddVersionButton.IsEnabled = hasGroup;
+        EditVersionButton.IsEnabled = hasVersion;
         DeleteVersionButton.IsEnabled = hasVersion;
         VersionEditor.IsEnabled = hasVersion;
         AddProjectButton.IsEnabled = hasVersion;
@@ -547,10 +632,12 @@ public sealed partial class MainWindow : Window
         LanguageLabel.Text = LocalizationService.Get("Language");
         GroupsLabel.Text = LocalizationService.Get("Groups");
         AddGroupButton.Content = LocalizationService.Get("Add");
+        EditGroupButton.Content = LocalizationService.Get("Edit");
         DeleteGroupButton.Content = LocalizationService.Get("Delete");
         VersionsTab.Header = LocalizationService.Get("Versions");
         ProjectsTab.Header = LocalizationService.Get("Projects");
         AddVersionButton.Content = LocalizationService.Get("Add");
+        EditVersionButton.Content = LocalizationService.Get("Edit");
         DeleteVersionButton.Content = LocalizationService.Get("Delete");
         ExecutableLabel.Text = LocalizationService.Get("Executable");
         BrowseExecutableButton.Content = LocalizationService.Get("Browse");

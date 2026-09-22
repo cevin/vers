@@ -31,7 +31,7 @@ public static class DirectoryBinding
         return true;
     }
 
-    public static string Bind(
+    public static DirectoryBindingResult Bind(
         Settings settings,
         string groupName,
         string requestedVersion,
@@ -45,9 +45,17 @@ public static class DirectoryBinding
         }
 
         var versionName = ResolveVersionName(groupName, group, requestedVersion);
-        var normalizedDirectory = ToolResolver.NormalizePath(workingDirectory);
-        group.Projects[normalizedDirectory] = versionName;
-        return versionName;
+        var storageDirectory = ToolResolver.NormalizePathForStorage(workingDirectory);
+        var existingDirectory = group.Projects.Keys.FirstOrDefault(path =>
+            ToolResolver.NormalizePath(path).Equals(
+                ToolResolver.NormalizePath(storageDirectory),
+                OperatingSystem.IsWindows()
+                    ? StringComparison.OrdinalIgnoreCase
+                    : StringComparison.Ordinal));
+        var directoryKey = existingDirectory ?? storageDirectory;
+        group.Projects.TryGetValue(directoryKey, out var previousVersionName);
+        group.Projects[directoryKey] = versionName;
+        return new DirectoryBindingResult(versionName, previousVersionName, directoryKey);
     }
 
     public static string ResolveVersionName(
@@ -91,4 +99,17 @@ public static class DirectoryBinding
 
         return $"Available versions:{Environment.NewLine}{string.Join(Environment.NewLine, lines)}";
     }
+}
+
+public sealed record DirectoryBindingResult(
+    string VersionName,
+    string? PreviousVersionName,
+    string DirectoryPath)
+{
+    public bool IsReplacement => PreviousVersionName is not null &&
+        !PreviousVersionName.Equals(VersionName, StringComparison.OrdinalIgnoreCase);
+
+    public bool IsUnchanged => PreviousVersionName?.Equals(
+        VersionName,
+        StringComparison.OrdinalIgnoreCase) == true;
 }

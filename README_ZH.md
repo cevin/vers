@@ -4,6 +4,40 @@ Vers 是一个使用 .NET 10、Avalonia 和 Semi.Avalonia 开发的跨平台运�
 为 `php`、`java`、`node` 或任意自定义分组创建命令代理，并根据当前目录、临时环境变量或默认
 配置选择真正需要执行的程序。
 
+<p align="center">
+  <img src="docs/main.png" alt="Vers 主界面" width="900">
+</p>
+
+## 使用方法
+
+1. 新建分组。分组名称就是用户实际执行的命令，例如 `php`、`java`、`mvn` 或 `gradle`。Vers
+   会在 `bin` 目录中创建同名代理。
+2. 在分组中添加一个或多个版本。每个版本需要配置真实可执行文件，也可以配置该版本专用的环境变量。
+3. 选择默认版本；如果某个项目需要不同版本，再为该分组添加项目目录映射。
+4. 点击一次 **设置 PATH**，然后重新打开已经存在的终端。
+
+当当前目录是已配置的项目目录，或者位于该目录的任意子目录中时，执行分组命令会自动路由到该项目
+选择的预设版本：
+
+```bash
+cd /work/my-project
+php --version
+java --version
+mvn --version
+gradle --version
+```
+
+每个分组都有独立的项目映射，因此同一个项目可以同时使用 PHP 84、Java 21、Maven 3.9 和指定的
+Gradle 版本。Maven 通常使用的实际命令是 `mvn`；如果需要拦截 Maven，请将分组名称设置为
+`mvn`。
+
+> [!NOTE]
+> Maven 和 Gradle 会在内部启动 Java。如果选中的 `mvn` 或 `gradle` 版本配置了
+> `JAVA_HOME`，启动脚本通常会直接执行 `$JAVA_HOME/bin/java`，不会经过 Vers 的 `java`
+> 代理。如果没有设置 `JAVA_HOME`，并且启动脚本通过 PATH 查找 `java`，则应当同时在 `java`
+> 分组中为同一个项目目录设置版本；否则 Vers 会使用 Java 分组的默认版本。Gradle 还可能复用
+> 之前使用旧 JVM 启动的 daemon，修改 Java 配置后应执行一次 `gradle --stop`。
+
 ## 托管文件
 
 在 macOS 和 Linux 上，Vers 将托管文件放在 `~/.vers`。在 Windows 上，Vers 使用启动
@@ -95,3 +129,7 @@ GUI 和生成的命令代理均以自包含方式发布，目标机器无需单�
 
 可编辑的图标源文件位于 `src/Vers.Gui/Assets/logo.png`。生成的 `.ico` 和 `.icns` 文件与源图
 放在同一目录，并由各平台打包脚本自动嵌入。
+
+## 开源协议
+
+Vers 使用 [MIT License](LICENSE) 发布。

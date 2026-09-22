@@ -5,6 +5,43 @@ It creates command proxies for arbitrary groups such as `php`, `java`, and `node
 real executable from the current directory, a temporary environment override, or the configured
 default.
 
+<p align="center">
+  <img src="docs/main.png" alt="Vers main window" width="900">
+</p>
+
+## Usage
+
+1. Create a group whose name is the command users will run, such as `php`, `java`, `mvn`, or
+   `gradle`. Vers creates the matching proxy in its `bin` directory.
+2. Add one or more versions to the group. Each version defines the real executable and any
+   version-specific environment variables.
+3. Choose a default version, then add project-directory mappings when a project needs a different
+   version.
+4. Click **Set PATH** once and reopen existing terminals.
+
+When the current directory is a configured project directory, or any directory below it, invoking
+the group command automatically routes to that project's selected version:
+
+```bash
+cd /work/my-project
+php --version
+java --version
+mvn --version
+gradle --version
+```
+
+Each group has independent project mappings, so the same project can use PHP 84, Java 21, Maven
+3.9, and a specific Gradle version at the same time. Maven's actual command is normally `mvn`, so
+use `mvn` as the group name if that is the command you want to intercept.
+
+> [!NOTE]
+> Maven and Gradle launch Java internally. If the selected `mvn` or `gradle` version defines
+> `JAVA_HOME`, its launcher normally runs `$JAVA_HOME/bin/java` directly and does not pass through
+> the Vers `java` proxy. If `JAVA_HOME` is not set and the launcher resolves `java` through PATH,
+> configure the same project directory in the `java` group; otherwise Vers uses the Java group's
+> default version. Gradle may reuse a daemon that was started with an older JVM, so run
+> `gradle --stop` after changing Java settings.
+
 ## Managed files
 
 On macOS and Linux, Vers stores its managed files under `~/.vers`. On Windows, it uses the working
@@ -102,3 +139,7 @@ single-file GUI executable.
 
 The editable icon source is `src/Vers.Gui/Assets/logo.png`. Generated `.ico` and `.icns` files live
 beside it and are embedded by the platform packaging scripts.
+
+## License
+
+Vers is released under the [MIT License](LICENSE).
